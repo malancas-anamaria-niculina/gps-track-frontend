@@ -7,9 +7,11 @@ import { FixedSizeList } from 'react-window';
 import { useEffect, useState } from 'react';
 import { Container, Col, Row, Form } from "react-bootstrap";
 import { Button } from '@mui/material';
+import { useNavigate } from "react-router-dom";
 
+import axios from "axios";
 import Map from './Map';
-import { API_URL } from '../utils/constants'
+import { API_URL, axiosConfig } from '../utils/constants'
 import { color } from '@mui/system';
 
 function MapPage() {
@@ -20,10 +22,11 @@ function MapPage() {
     const [loadingPage, isLoading] = useState(true);
     const [bgColour, changeBgColour] = useState("green");
 
+    const config = axiosConfig(localStorage.getItem("token"));
+    const navigate = useNavigate();
+
     function handleTerminalId(index, props, value) {
-        console.log(index);
-        console.log(props);
-        console.log(value);
+
         setReqTerminalId(value);
     }
 
@@ -40,39 +43,47 @@ function MapPage() {
     }
 
     const getPositions = async (url) => {
-        const response = await Promise.resolve(fetch(url, {
-            method: 'GET',
-            headers: new Headers({
-                'Content-Type': 'application/json',
-                'token': 'token',
-                'Access-Control-Allow-Origin': '*'
+        axios
+            .get(url, config)
+            .then((response) => response.data)
+            .then((data) => data.map((obj) => obj.terminalId))
+            .then((terminalsId) => {
+                setTerminalId([...new Set(terminalsId)]);
+                isLoading(false);
             })
-        }).then((response) => response.json())
-            .catch(err => {
-                console.error(err);
-            }));
-        return response;
+            .catch((error) => console.log(error));
     };
 
     const getMapPositions = async () => {
-        console.log(date);
-        console.log(selectedTerminalId);
-        const resp = await getPositions(`${API_URL}/positions/getLocations?terminalId=${selectedTerminalId}&startDate=${date.startDate}&finalDate=${date.endDate}`);
-        console.log(resp);
-        const posData = new Set(resp.map((obj) => ({
-            lat: obj.latitude,
-            lng: obj.longitude,
-        }))
-            .map(JSON.stringify)
-        );
-        setPositions([...posData].map(JSON.parse));
+        const url = `${API_URL}/positions/getLocations?terminalId=${selectedTerminalId}&startDate=${date.startDate}&finalDate=${date.endDate}`;
+
+        await axios
+            .get(url, config)
+            .then((response) => response.data)
+            .then((data) => {
+                const newData = new Set(
+                    data
+                        .map((entry) => ({
+                            lat: entry.latitude,
+                            lng: entry.longitude,
+                        }))
+                        .map(JSON.stringify)
+                );
+                setPositions([...newData].map(JSON.parse));
+                isLoading(false);
+            })
+            .catch((error) => console.log(error));
+
+    };
+
+    const logout = () => {
+        localStorage.setItem('token', '');
+        localStorage.setItem('username', '');
+        navigate('/login');
     }
 
     useEffect(async () => {
-        const resp = await getPositions(`${API_URL}/positions/`);
-        const data = resp.map((obj) => obj.terminalId);
-        setTerminalId([...new Set(data)]);
-        isLoading(false);
+        await getPositions(`${API_URL}/positions/getPositions?username=${localStorage.getItem("username")}`);
     }, []);
 
     return (
@@ -80,6 +91,7 @@ function MapPage() {
         < Box
             sx={{ width: '100%', height: '100%', bgcolor: 'background.paper', display: 'flex' }}
         >
+
             {!!!loadingPage && (<div className="terminalList">
                 <p>Selected terminal id: {selectedTerminalId}</p>
                 <FixedSizeList
@@ -123,6 +135,10 @@ function MapPage() {
                 <div className="divC">
                     {!!positions.length && <Map positions={positions} />}
                 </div>
+            </div>
+            <div>
+                <p>Welcome, {localStorage.getItem("username")}</p>
+                <Button onClick={logout}>Log out</Button>
             </div>
         </Box>
 

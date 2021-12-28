@@ -2,12 +2,10 @@ import React from "react";
 import GoogleMapReact from "google-map-react";
 
 function Map({ positions }) {
-    console.log(positions);
     const getMapBounds = (map, maps, positions) => {
         const bounds = new maps.LatLngBounds();
 
         positions.forEach((position) => {
-            console.log(position);
             bounds.extend(new maps.LatLng(position.lat, position.lng));
         });
 

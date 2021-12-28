@@ -69,3 +69,7 @@
   height: '100%';
   padding-right: 1cm;
 }
+
+.princDiv {
+  flex-direction: row;
+}
