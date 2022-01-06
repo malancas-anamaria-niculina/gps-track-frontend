@@ -52,6 +52,7 @@ function Map({ positions }) {
 
     return (
         <GoogleMapReact
+            key={new Date().getTime()}
             defaultCenter={positions[0]}
             defaultZoom={11}
             yesIWantToUseGoogleMapApiInternals

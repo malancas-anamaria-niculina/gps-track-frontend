@@ -74,6 +74,9 @@ function MapPage() {
             })
             .catch((error) => console.log(error));
 
+        setDate({ ...date, startDate: "", endDate: "" });
+        setReqTerminalId("");
+
     };
 
     const logout = () => {
@@ -115,6 +118,7 @@ function MapPage() {
                                 <Form.Control type="text"
                                     placeholder="yyyy-MM-dd"
                                     defaultValue={date.startDate}
+                                    value={date.startDate}
                                     onChange={e => setDate({ ...date, startDate: e.target.value })} />
                             </Form.Group>
                         </div>
@@ -125,6 +129,7 @@ function MapPage() {
                                     type="text"
                                     placeholder="yyyy-MM-dd"
                                     defaultValue={date.endDate}
+                                    value={date.endDate}
                                     onChange={e => setDate({ ...date, endDate: e.target.value })} />
                             </Form.Group>
                         </div>
