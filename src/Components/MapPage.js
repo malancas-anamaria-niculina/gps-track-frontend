@@ -35,7 +35,7 @@ function MapPage() {
 
         return (
             <ListItem style={style} key={index} component="div" disablePadding onClick={handleTerminalId.bind(this, index, props, data[index])}>
-                <ListItemButton>
+                <ListItemButton class="textStyle">
                     <ListItemText primary={`${data[index]}`} />
                 </ListItemButton>
             </ListItem>
@@ -83,7 +83,7 @@ function MapPage() {
     }
 
     useEffect(async () => {
-        await getPositions(`${API_URL}/positions/getPositions?username=${localStorage.getItem("username")}`);
+        await getPositions(`${API_URL}/positions/getTerminalIds?username=${localStorage.getItem("username")}`);
     }, []);
 
     return (
@@ -107,9 +107,9 @@ function MapPage() {
                 </FixedSizeList>
             </div>)}
             <div className='compDiv'>
-                <Form>
+                <Form className='form-inline'>
                     <div className='formStyle'>
-                        <div>
+                        <div class="pa">
                             <Form.Group className="mb-3" controlId="startDate">
                                 <Form.Label>Start Date </Form.Label>
                                 <Form.Control type="text"
@@ -118,10 +118,11 @@ function MapPage() {
                                     onChange={e => setDate({ ...date, startDate: e.target.value })} />
                             </Form.Group>
                         </div>
-                        <div>
+                        <div class="pa">
                             <Form.Group className="mb-3" controlId="endDate">
                                 <Form.Label>End Date </Form.Label>
-                                <Form.Control type="text"
+                                <Form.Control class=""
+                                    type="text"
                                     placeholder="yyyy-MM-dd"
                                     defaultValue={date.endDate}
                                     onChange={e => setDate({ ...date, endDate: e.target.value })} />
@@ -136,7 +137,7 @@ function MapPage() {
                     {!!positions.length && <Map positions={positions} />}
                 </div>
             </div>
-            <div>
+            <div class="wa">
                 <p>Welcome, {localStorage.getItem("username")}</p>
                 <Button onClick={logout}>Log out</Button>
             </div>

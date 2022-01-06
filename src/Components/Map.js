@@ -20,7 +20,7 @@ function Map({ positions }) {
         });
     };
 
-    const apiIsLoaded = (map, maps, positions) => {
+    const showPositionsOnMap = (map, maps, positions) => {
         positions.map((position, index) => {
             const marker = new maps.Marker({
                 position: position,
@@ -52,14 +52,11 @@ function Map({ positions }) {
 
     return (
         <GoogleMapReact
-            defaultCenter={{
-                lat: 40.854885,
-                lng: -88.081807
-            }}
+            defaultCenter={positions[0]}
             defaultZoom={11}
             yesIWantToUseGoogleMapApiInternals
             onGoogleApiLoaded={({ map, maps }) =>
-                apiIsLoaded(map, maps, positions)
+                showPositionsOnMap(map, maps, positions)
             }
         ></GoogleMapReact >
     );
