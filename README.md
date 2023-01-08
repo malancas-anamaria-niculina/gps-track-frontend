@@ -6,10 +6,10 @@ Frontend app used to get GPS data from a server and display them on a Google map
 
 Login page:
 
-![image](/images/login.jpg?raw=true)
+![image](/images/login.png?raw=true)
 
 After the login is finished successfully, the locations will be displayed on a Google map after is selected a device id, a start and an end date (data is retrieved for the user that was logged in):
-![image](/images/map.jpg?raw=true)
+![image](/images/map.png?raw=true)
 
 
 ## Available Scripts
